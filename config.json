@@ -1,0 +1,27 @@
+{
+    "name": "Survey Participant IP",
+    "namespace": "SurveyParticipantIP\\ExternalModule",
+    "description": "Provides a new action tag - @SURVEY-PARTICIPANT-IP - which sets a hidden field that collects the survey participant's IP address. <strong><a href=\"https://github.com/ctsit/redcap_user_ip\">See full documentation here</a></strong>.",
+    "permissions": [
+        "redcap_survey_page_top",
+        "redcap_every_page_top",
+        "redcap_every_page_before_render"
+    ],
+    "authors": [
+        {
+            "name": "Philip Chase",
+            "email": "pbc@ufl.edu",
+            "institution": "University of Florida - CTSI"
+        },
+        {
+            "name": "Taryn Stoffs",
+            "email": "tls@ufl.edu",
+            "institution": "University of Florida - CTSI"
+        },
+        {
+            "name": "Tiago Bember",
+            "email": "tbembersimeao@ufl.edu",
+            "institution": "University of Florida - CTSI"
+        }
+    ]
+}
