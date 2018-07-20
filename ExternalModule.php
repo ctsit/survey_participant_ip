@@ -16,17 +16,22 @@ use System;
  */
 class ExternalModule extends AbstractExternalModule {
 
-    protected static $ipFields = [];
+    protected static $ipFields;
+    protected static $ipifyEnabled;
 
     /**
      * @inheritdoc
      */
     function redcap_every_page_before_render($project_id) {
-        if (!$project_id || !empty($ipFields) || $this->currentPageIsForm()) {
+        if (!$project_id || isset(self::$ipFields) || !$this->currentPageIsForm()) {
             return;
         }
 
         global $Proj;
+
+        self::$ipifyEnabled = $this->getProjectSetting('mode') == 'ipify';
+        self::$ipFields = [];
+
         $fields = empty($_GET['page']) ? $Proj->metadata : $Proj->forms[$_GET['page']]['fields'];
 
         foreach (array_keys($fields) as $field_name) {
@@ -36,8 +41,23 @@ class ExternalModule extends AbstractExternalModule {
                 continue;
             }
 
+            // Turning IP fields hidden for surveys and read-only for data
+            // entry forms.
             $Proj->metadata[$field_name]['misc'] .= ' @HIDDEN-SURVEY @READONLY-FORM';
             self::$ipFields[] = $field_name;
+        }
+
+        if (self::$ipifyEnabled || empty(self::$ipFields) || PAGE != 'surveys/index.php' || $_SERVER['REQUEST_METHOD'] != 'POST') {
+            return;
+        }
+
+        $ip = System::clientIpAddress();
+
+        foreach (self::$ipFields as $field) {
+            if (isset($_POST[$field])) {
+                // Setting up IP.
+                $_POST[$field] = $ip;
+            }
         }
     }
 
@@ -54,7 +74,7 @@ class ExternalModule extends AbstractExternalModule {
      * @inheritdoc
      */
     function redcap_survey_page_top($project_id, $record = null, $instrument, $event_id, $group_id = null, $survey_hash, $response_id = null, $repeat_instance = 1) {
-        if (empty(self::$ipFields) || $this->currentSurveyHasData()) {
+        if (empty(self::$ipifyEnabled) || empty(self::$ipFields) || $this->currentSurveyHasData()) {
             return;
         }
 
@@ -68,7 +88,7 @@ class ExternalModule extends AbstractExternalModule {
      * @return bool
      */
     function currentPageIsForm() {
-        return (!isset($_GET['s']) || PAGE != 'surveys/index.php' || !defined('NOAUTH')) && (PAGE != 'DataEntry/index.php' || empty($_GET['id']));
+        return (isset($_GET['s']) && PAGE == 'surveys/index.php' && defined('NOAUTH')) || (PAGE == 'DataEntry/index.php' && !empty($_GET['id']));
     }
 
     /**
