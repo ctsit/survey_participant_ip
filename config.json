@@ -24,6 +24,24 @@
             "institution": "University of Florida - CTSI"
         }
     ],
+    "project-settings": [
+        {
+            "key": "mode",
+            "name": "IP collection mode",
+            "type": "radio",
+            "default": "redcap",
+            "choices": [
+                {
+                    "name": "REDCap (default)",
+                    "value": "redcap"
+                },
+                {
+                    "name": "<a href=\"https://www.ipify.org/\" target=\"_blank\"><u>ipify</u></a>",
+                    "value": "ipify"
+                }
+            ]
+        }
+    ],
     "compatibility": {
         "redcap-version-min": "8.0.3"
     }
