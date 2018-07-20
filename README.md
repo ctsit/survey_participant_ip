@@ -18,5 +18,12 @@ The first step is accessing Online Desinger of your project to create a text fie
 
 And that's it! The field will be invisible for survey participants, and the IPs will be automatically collected.
 
-### How the IPs are collected
-This module uses [ipify](https://www.ipify.org/) on the client side (browser) to get the public IP address.
+## Using ipify to collect IP addresses
+By default, REDCap system is used to get IP addresses. Alternatively, you may enable [ipify](https://www.ipify.org/), a third-party API that increases reliability of the collected IPs.
+
+![Configuration screen](img/config.png)
+
+The ipify mode works from the client browser, so keep in mind that survey participants may spoof the IP value by via browser developer tools.
+
+## Important
+Please keep in mind an IP address can be easily spoofed (e.g. VPN, proxy servers), so there is no guaranteed way to get a "real" IP.
